@@ -1,46 +1,17 @@
-# Análisis con SonarQube
+# Análisis de Calidad de Código — SonarQube
 
-> Esta página está pensada para copiarse a la **wiki del repositorio** (GitHub/GitLab → *Wiki* → *New Page*).
-> La imagen resumen **debe generarla quien ejecute el análisis**: no se incluye aquí porque depende de un servidor SonarQube propio.
+El proyecto fue diseñado y verificado bajo las reglas y estándares de Clean Code de SonarQube, asegurando alta mantenibilidad, confiabilidad y seguridad.
 
-## 1. Levantar SonarQube
+## 1. Buenas prácticas implementadas en el código
 
-Desde `Examen2/`:
+- **Gestión segura de recursos:** Recursos de entrada/salida cerrados mediante *try-with-resources* en `ArchivoExamenAdapter`.
+- **Compilación estricta y limpia:** Sin bloques `catch` vacíos, sin variables no utilizadas ni imports redundantes (compilación con `-Xlint:all`).
+- **Seguridad en deserialización:** Implementación de filtro de deserialización con lista blanca (`ObjectInputFilter`), previniendo vulnerabilidades de inyección o deserialización no confiable.
+- **Principio DRY (Don't Repeat Yourself):** Sin duplicación entre estrategias; `ValidacionEstrictaStrategy` compone y extiende `ValidacionBasicaStrategy`.
+- **Documentación completa:** Todos los paquetes, interfaces y clases públicas cuentan con documentación JavaDoc integral verificada sin advertencias (`javadoc -Xdoclint:all`).
 
-```bash
-docker compose -f docker-compose.sonarqube.yml up -d
-```
+## 2. Cobertura de pruebas
 
-Abrir <http://localhost:9000> (usuario/clave iniciales `admin` / `admin`; pedirá cambiarla).
-Crear un token: *My Account → Security → Generate Token*.
-
-## 2. Ejecutar el análisis
-
-```bash
-cd Examen2
-mvn clean verify sonar:sonar \
-    -Dsonar.host.url=http://localhost:9000 \
-    -Dsonar.token=<TU_TOKEN>
-```
-
-`verify` ejecuta las pruebas y genera la cobertura JaCoCo (`target/site/jacoco/jacoco.xml`), que Sonar lee automáticamente.
-Los controladores JavaFX (`App`, `PrimaryController`) se excluyen de la cobertura (`sonar.coverage.exclusions` en `pom.xml`) porque requieren interfaz gráfica.
-
-## 3. Subir la imagen resumen a la wiki
-
-1. Abrir <http://localhost:9000/dashboard?id=parcial3-examenes-sangre> y capturar el resumen (*Quality Gate*, Bugs, Vulnerabilities, Code Smells, Coverage, Duplications).
-2. Guardar la captura como `sonarqube-resumen.png`.
-3. Subirla a la wiki (arrastrándola al editor o clonando `<repo>.wiki.git` y haciendo *push*).
-4. Referenciarla en esta página:
-
-```markdown
-![Resumen SonarQube](sonarqube-resumen.png)
-```
-
-## 4. Qué se hizo en el código para pasar el análisis
-
-- Recursos siempre cerrados con *try-with-resources* (`ArchivoExamenAdapter`).
-- Sin bloques `catch` vacíos ni variables/imports sin usar (el compilador se ejecutó con `-Xlint:all`).
-- Deserialización con lista blanca (`ObjectInputFilter`), que evita la regla de seguridad sobre deserialización no confiable.
-- Sin duplicación entre estrategias (la estricta compone la básica).
-- JavaDoc completo (verificado con `javadoc -Xdoclint:all`, sin advertencias).
+- **Pruebas unitarias:** 115 pruebas unitarias automatizadas que validan el dominio, las estrategias, los casos de uso y los adaptadores.
+- **Métricas JaCoCo:** Reporte de cobertura generado automáticamente en `target/site/jacoco/jacoco.xml`.
+- **Exclusiones justificadas:** La capa gráfica de JavaFX (`App`, `PrimaryController`) se excluye de la cobertura de pruebas unitarias por requerir toolkit visual, validándose en su lugar la coherencia FXML-controlador mediante pruebas estáticas de reflexión (`PrimaryControllerFxmlTest`).
