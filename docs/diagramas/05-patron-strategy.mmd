@@ -1,0 +1,35 @@
+classDiagram
+    direction TB
+    class GestionExamenService {
+        <<Context>>
+        -ValidacionExamenStrategy validacion
+        +guardar(ExamenMedico) ExamenMedico
+    }
+    class ValidacionExamenStrategy {
+        <<interface>>
+        +validar(ExamenMedico) void
+    }
+    class ValidacionBasicaStrategy {
+        código 3-20 · nombre 3-100
+    }
+    class ValidacionEstrictaStrategy {
+        básica + formato AAA-123
+        solo letras · costo máx y 2 decimales
+    }
+    class ValidacionNuevaStrategy {
+        futura política, sin tocar el servicio
+    }
+    class ReglaNegocioException
+    class ComposicionRaiz {
+        elige la estrategia según validacion.modo
+    }
+    GestionExamenService o-- ValidacionExamenStrategy
+    ValidacionExamenStrategy <|.. ValidacionBasicaStrategy
+    ValidacionExamenStrategy <|.. ValidacionEstrictaStrategy
+    ValidacionExamenStrategy <|.. ValidacionNuevaStrategy
+    ValidacionEstrictaStrategy o-- ValidacionExamenStrategy : base
+    ValidacionExamenStrategy ..> ReglaNegocioException : lanza si falla
+    ComposicionRaiz ..> GestionExamenService : inyecta
+    note for GestionExamenService "Rol GoF: Context"
+    note for ValidacionExamenStrategy "Rol GoF: Strategy"
+    note for ValidacionBasicaStrategy "Rol GoF: ConcreteStrategy"

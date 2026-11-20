@@ -1,0 +1,9 @@
+target/
+bin/
+data/
+.scannerwork/
+*.class
+# Archivos generados por el IDE (Eclipse / extensión Java de VS Code)
+.classpath
+.project
+.settings/

@@ -1,0 +1,41 @@
+classDiagram
+    direction LR
+    class ExamenMedico {
+        <<Product>>
+        -String codigoExamen
+        -String nombrePaciente
+        -double costo
+        -TipoSangre tipoSangre
+        -FactorRh factorRh
+        -ExamenMedico(Builder)
+        +builder() Builder$
+        +getCodigoExamen() String
+        +getGrupoSanguineo() String
+    }
+    class Builder {
+        <<Builder>>
+        -String codigoExamen
+        -String nombrePaciente
+        -double costo
+        -TipoSangre tipoSangre
+        -FactorRh factorRh
+        +codigoExamen(String) Builder
+        +nombrePaciente(String) Builder
+        +costo(double) Builder
+        +tipoSangre(TipoSangre) Builder
+        +factorRh(FactorRh) Builder
+        +build() ExamenMedico
+    }
+    class ReglaNegocioException
+    class ExamenFormMapper {
+        <<Director/Client>>
+    }
+    class ExamenRegistro {
+        <<Client>>
+        +aDominio() ExamenMedico
+    }
+    ExamenMedico *-- Builder : clase anidada
+    Builder ..> ExamenMedico : crea (único camino)
+    Builder ..> ReglaNegocioException : valida invariantes
+    ExamenFormMapper ..> Builder : usa
+    ExamenRegistro ..> Builder : usa (revalida al leer)

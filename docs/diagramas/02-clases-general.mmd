@@ -1,0 +1,114 @@
+classDiagram
+    direction TB
+    class ExamenMedico {
+        -String codigoExamen
+        -String nombrePaciente
+        -double costo
+        -TipoSangre tipoSangre
+        -FactorRh factorRh
+        +builder() Builder$
+        +getCodigoExamen() String
+        +getNombrePaciente() String
+        +getCosto() double
+        +getTipoSangre() TipoSangre
+        +getFactorRh() FactorRh
+        +getGrupoSanguineo() String
+    }
+    class Builder {
+        +codigoExamen(String) Builder
+        +nombrePaciente(String) Builder
+        +costo(double) Builder
+        +tipoSangre(TipoSangre) Builder
+        +factorRh(FactorRh) Builder
+        +build() ExamenMedico
+    }
+    class TipoSangre {
+        <<enumeration>>
+        A
+        B
+        AB
+        O
+    }
+    class FactorRh {
+        <<enumeration>>
+        POSITIVO
+        NEGATIVO
+    }
+    class ReglaNegocioException {
+        +ReglaNegocioException(String mensaje)
+    }
+    class GuardarExamenUseCase {
+        <<interface>>
+        +guardar(ExamenMedico) ExamenMedico
+    }
+    class ListarExamenesUseCase {
+        <<interface>>
+        +listar() List~ExamenMedico~
+    }
+    class SerializarExamenesUseCase {
+        <<interface>>
+        +serializar() String
+    }
+    class DeserializarExamenesUseCase {
+        <<interface>>
+        +deserializar() List~ExamenMedico~
+    }
+    class GestionExamenService {
+        -ExamenRepositoryPort repositorio
+        -ValidacionExamenStrategy validacion
+    }
+    class ExamenRepositoryPort {
+        <<interface>>
+        +guardar(ExamenMedico) ExamenMedico
+        +listarTodos() List~ExamenMedico~
+        +serializar() String
+        +deserializar() List~ExamenMedico~
+    }
+    class ValidacionExamenStrategy {
+        <<interface>>
+        +validar(ExamenMedico) void
+    }
+    class ValidacionBasicaStrategy
+    class ValidacionEstrictaStrategy
+    class ArchivoExamenAdapter {
+        -Path rutaArchivo
+    }
+    class ExamenRegistro {
+        <<record>>
+    }
+    class PrimaryController
+    class ExamenFormMapper {
+        +aDominio(FormularioExamen) ExamenMedico
+    }
+    class MensajesPresentador
+    class App
+    class ComposicionRaiz
+
+    ExamenMedico *-- Builder
+    ExamenMedico --> TipoSangre
+    ExamenMedico --> FactorRh
+    Builder ..> ReglaNegocioException : lanza si falla
+    GuardarExamenUseCase <|.. GestionExamenService
+    ListarExamenesUseCase <|.. GestionExamenService
+    SerializarExamenesUseCase <|.. GestionExamenService
+    DeserializarExamenesUseCase <|.. GestionExamenService
+    GestionExamenService --> ExamenRepositoryPort
+    GestionExamenService --> ValidacionExamenStrategy
+    ValidacionExamenStrategy <|.. ValidacionBasicaStrategy
+    ValidacionExamenStrategy <|.. ValidacionEstrictaStrategy
+    ValidacionEstrictaStrategy o-- ValidacionExamenStrategy : base
+    ValidacionExamenStrategy ..> ReglaNegocioException
+    ExamenRepositoryPort <|.. ArchivoExamenAdapter
+    ArchivoExamenAdapter ..> ExamenRegistro
+    PrimaryController --> GuardarExamenUseCase
+    PrimaryController --> ListarExamenesUseCase
+    PrimaryController --> SerializarExamenesUseCase
+    PrimaryController --> DeserializarExamenesUseCase
+    PrimaryController --> ExamenFormMapper
+    PrimaryController --> MensajesPresentador
+    ExamenFormMapper ..> Builder
+    App ..> PrimaryController : controllerFactory
+    App ..> ComposicionRaiz
+    ComposicionRaiz ..> GestionExamenService : crea
+    ComposicionRaiz ..> ArchivoExamenAdapter : crea
+    ComposicionRaiz ..> ValidacionEstrictaStrategy : crea

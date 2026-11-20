@@ -1,0 +1,15 @@
+target/
+**/target/
+bin/
+**/bin/
+data/
+**/data/
+.scannerwork/
+**/.scannerwork/
+*.class
+**/*.class
+.classpath
+.project
+.settings/
+.DS_Store
+Thumbs.db

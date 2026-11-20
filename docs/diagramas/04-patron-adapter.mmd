@@ -1,0 +1,47 @@
+classDiagram
+    direction TB
+    class ExamenRepositoryPort {
+        <<interface>>
+        +guardar(ExamenMedico) ExamenMedico
+        +listarTodos() List~ExamenMedico~
+        +serializar() String
+        +deserializar() List~ExamenMedico~
+    }
+    class ArchivoExamenAdapter {
+        -Path rutaArchivo
+        -Map~String,ExamenMedico~ memoria
+        +guardar(ExamenMedico) ExamenMedico
+        +listarTodos() List~ExamenMedico~
+        +serializar() String
+        +deserializar() List~ExamenMedico~
+    }
+    class JavaIoApi {
+        <<Adaptee>>
+        ObjectOutputStream
+        ObjectInputStream
+        ObjectInputFilter
+        Files
+    }
+    class ExamenRegistro {
+        <<record, Serializable>>
+    }
+    class GestionExamenService {
+        <<Client>>
+    }
+    class FormularioExamen {
+        <<record>>
+        texto crudo de la pantalla
+    }
+    class ExamenFormMapper {
+        <<Adapter>>
+        +aDominio(FormularioExamen) ExamenMedico
+    }
+    class ExamenMedico
+    GestionExamenService --> ExamenRepositoryPort : Target
+    ExamenRepositoryPort <|.. ArchivoExamenAdapter
+    ArchivoExamenAdapter --> JavaIoApi : adapta
+    ArchivoExamenAdapter ..> ExamenRegistro
+    ExamenFormMapper --> FormularioExamen : Adaptee
+    ExamenFormMapper ..> ExamenMedico : produce
+    note for ArchivoExamenAdapter "Adapter: traduce la API de archivos/serialización de Java al puerto"
+    note for ExamenFormMapper "Adapter: traduce los datos de la pantalla al dominio"

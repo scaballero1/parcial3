@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Maven: compilar", "type": "shell", "command": "mvn clean compile", "problemMatcher": ["$java"] },
+    { "label": "Maven: pruebas", "type": "shell", "command": "mvn clean test", "group": "test", "problemMatcher": ["$java"] },
+    { "label": "Maven: JavaDoc", "type": "shell", "command": "mvn javadoc:javadoc", "problemMatcher": [] },
+    { "label": "Ejecutar aplicación (JavaFX)", "type": "shell", "command": "mvn clean javafx:run", "group": { "kind": "build", "isDefault": true }, "problemMatcher": [] },
+    { "label": "Maven: SonarQube", "type": "shell", "command": "mvn clean verify sonar:sonar -Dsonar.token=${input:sonarToken}", "problemMatcher": [] }
+  ],
+  "inputs": [
+    { "id": "sonarToken", "type": "promptString", "description": "Token de SonarQube", "password": true }
+  ]
+}

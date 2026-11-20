@@ -1,0 +1,21 @@
+sequenceDiagram
+    actor U as Usuario
+    participant C as PrimaryController
+    participant M as ExamenFormMapper
+    participant B as ExamenMedico.Builder
+    participant S as GestionExamenService
+    participant V as ValidacionExamenStrategy
+    participant R as ExamenRepositoryPort
+    U->>C: clic en "Guardar"
+    C->>M: aDominio(FormularioExamen)
+    M->>B: codigoExamen(..).costo(..)...build()
+    B-->>M: ExamenMedico (o ReglaNegocioException)
+    M-->>C: ExamenMedico
+    C->>S: guardar(examen)
+    S->>V: validar(examen)
+    V-->>S: ok (o ReglaNegocioException)
+    S->>R: listarTodos() · ¿código repetido?
+    S->>R: guardar(examen)
+    R-->>S: examen
+    S-->>C: examen
+    C-->>U: "✔ Examen registrado: ..."

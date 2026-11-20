@@ -1,0 +1,35 @@
+flowchart LR
+    subgraph IN["Adaptadores de Entrada (JavaFX)"]
+        direction LR
+        APP["App.java"] --> FXML["primary.fxml"] --> CTRL["PrimaryController.java"]
+        CTRL --> MAP["ExamenFormMapper<br/>(Adapter)"]
+        CTRL --> PRES["MensajesPresentador"]
+    end
+    subgraph PIN["Puertos de Entrada"]
+        U1["GuardarExamenUseCase"]
+        U2["ListarExamenesUseCase"]
+        U3["SerializarExamenesUseCase"]
+        U4["DeserializarExamenesUseCase"]
+    end
+    subgraph APLI["Capa de Aplicación"]
+        SRV["GestionExamenService"]
+        STR["ValidacionExamenStrategy<br/>Estricta · Básica (Strategy)"]
+    end
+    subgraph POUT["Puertos de Salida"]
+        REPO["ExamenRepositoryPort"]
+    end
+    subgraph OUT["Adaptadores de Salida"]
+        ADA["ArchivoExamenAdapter<br/>(Adapter)"] --> FILE[("Archivo<br/>serializado")]
+    end
+    subgraph DOM["Capa de Dominio (Núcleo)"]
+        EX["ExamenMedico + Builder<br/>TipoSangre · FactorRh<br/>ReglaNegocioException"]
+    end
+    CTRL --> U1 & U2 & U3 & U4
+    U1 & U2 & U3 & U4 -.implementa.- SRV
+    SRV --> STR
+    SRV --> REPO
+    SRV --> EX
+    STR --> EX
+    REPO -.implementa.- ADA
+    MAP --> EX
+    ADA --> EX
